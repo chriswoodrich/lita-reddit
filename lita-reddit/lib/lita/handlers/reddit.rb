@@ -4,12 +4,14 @@ module Lita
       
       require 'snoo'
 
-      route(/(reddit)(\s)(.*)/ :reddit_image($3))
-
-      def reddit_image(subreddit)
+      route(/reddit\s+(?<sub>\w+)\s*(?<n>\d+)?/i, :reddit_image, command: true)
+      #n will be a numbered argument to be used in more complex requests
+      def reddit_image
+        sub, n = response.matches.captures
+        n ||= rand(26)
         reddit = Snoo::Client.new
-        reddit.log_in 'Litabot', 'admin'
-        puts + reddit.get_listing(subreddit: ARGV[0])['data']['children'][rand(25)]['data']['url']
+        reddit.log_in 'placeholder', 'placeholder'
+        puts + reddit.get_listing(subreddit: sub.to_s)['data']['children'][n.to_i]['data']['url']
       end
     end
 
